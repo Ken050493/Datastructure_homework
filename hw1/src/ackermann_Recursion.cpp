@@ -12,11 +12,11 @@ int ackermann(int m, int n) {
 
 int main() {
     int m, n;
-    cout << "½Ğ¿é¤J m ©M n¡G";
+    cout << "è«‹è¼¸å…¥ m å’Œ nï¼š";
     cin >> m >> n;
 
     if (m < 0 || n < 0) {
-        cout << "¿ù»~¡Gm ©M n ¥²¶·¬O«D­t¾ã¼Æ" << endl;
+        cout << "éŒ¯èª¤ï¼šm å’Œ n å¿…é ˆæ˜¯éè² æ•´æ•¸" << endl;
         return 1;
     }
 
