@@ -13,8 +13,16 @@ jobs:
       - name: Install clang-format
         run: sudo apt update && sudo apt install -y clang-format
 
-      - name: Check C++ format
+      - name: Show source files
         run: |
-          echo "Checking formatting for the following files:"
-          find . -name "*.cpp" -or -name "*.h"
-          clang-format --dry-run --Werror $(find . -name "*.cpp" -or -name "*.h")
+          echo "📝 檢查以下檔案："
+          find . -name "*.cpp" -o -name "*.h"
+
+      - name: Run clang-format and show diffs
+        run: |
+          echo "🔍 執行格式檢查..."
+          FILES=$(find . -name "*.cpp" -o -name "*.h")
+          for file in $FILES; do
+            echo "Checking $file"
+            clang-format $file | diff -u $file - || exit 1
+          done
