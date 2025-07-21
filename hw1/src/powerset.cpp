@@ -4,7 +4,7 @@ using namespace std;
 
 const int MAX_SIZE = 10;
 
-void generatePowerset(string set[],string current[],int index,int currentSize,int setSize) 
+void generatePowerset(string set[], string current[], int index, int currentSize, int setSize) 
 {
     if (index == setSize) {
         cout << "{ ";
