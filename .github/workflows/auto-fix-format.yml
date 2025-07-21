@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -31,18 +30,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: auto format using clang-format"
-          branch: auto/clang-format
-          create_branch: true
+          branch: main
           push_options: --force
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "style: auto format using clang-format"
-          title: "Auto format C++ code"
-          body: |
-            This PR formats the code using clang-format.
-            Please review and merge.
-          base: main
-          branch: auto/clang-format
-          delete-branch: true
