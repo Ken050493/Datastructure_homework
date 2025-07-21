@@ -1,0 +1,36 @@
+name: Format Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format
+
+      - name: Run clang-format
+        run: |
+          FILES=$(find . -regex '.*\.\(cpp\|hpp\|c\|h\)' -type f)
+          for file in $FILES; do
+            clang-format -style=Google -i "$file"
+          done
+
+      - name: Check for formatting changes
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          if [[ $(git status --porcelain) ]]; then
+            echo "Some files are not properly formatted:"
+            git diff
+            exit 1
+          else
+            echo "All files are properly formatted."
+          fi
