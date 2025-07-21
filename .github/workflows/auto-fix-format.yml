@@ -1,4 +1,4 @@
-name: Format Check
+name: Auto Fix Format
 
 on:
   push:
@@ -7,30 +7,42 @@ on:
     branches: [ main ]
 
 jobs:
-  check-format:
+  auto-fix-format:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install clang-format
         run: sudo apt-get install -y clang-format
 
-      - name: Run clang-format
+      - name: Run clang-format on source files
         run: |
           FILES=$(find . -regex '.*\.\(cpp\|hpp\|c\|h\)' -type f)
           for file in $FILES; do
             clang-format -style=Google -i "$file"
           done
 
-      - name: Check for formatting changes
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          if [[ $(git status --porcelain) ]]; then
-            echo "Some files are not properly formatted:"
-            git diff
-            exit 1
-          else
-            echo "All files are properly formatted."
-          fi
+      - name: Commit and push if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: auto format using clang-format"
+          branch: auto/clang-format
+          create_branch: true
+          push_options: --force
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "style: auto format using clang-format"
+          title: "Auto format C++ code"
+          body: |
+            This PR formats the code using clang-format.
+            Please review and merge.
+          base: main
+          branch: auto/clang-format
+          delete-branch: true
