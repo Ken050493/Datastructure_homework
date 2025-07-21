@@ -186,7 +186,8 @@ Powerset of {a, b, c}:
 { a b c }  
 ### 編譯與執行指令
 
-```shell
+```
+**遞迴版 Ackermann 函數**
 g++ -std=c++17 -o ackermann_recursive ackermann_recursive.cpp
 ./ackermann_recursive
 
