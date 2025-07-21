@@ -17,7 +17,8 @@ void generatePowerset(string set[], string current[], int index, int currentSize
     }
     generatePowerset(set, current, index + 1, currentSize, setSize);
     current[currentSize] = set[index];
-    generatePowerset(set, current, index + 1, currentSize + 1, setSize);
+    generatePowerset(set,          
+        current, index + 1, currentSize + 1, setSize);
 }
 
 int main()
