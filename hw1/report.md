@@ -187,9 +187,15 @@ Powerset of {a, b, c}:
 ### 編譯與執行指令
 
 ```shell
-$ g++ -std=c++17 -o sigma sigma.cpp
-$ ./sigma
-6
+g++ -std=c++17 -o ackermann_recursive ackermann_recursive.cpp
+./ackermann_recursive
+
+g++ -std=c++17 -o ackermann_iterative ackermann_iterative.cpp
+./ackermann_iterative
+
+g++ -std=c++17 -o powerset powerset.cpp
+./powerset
+
 ```
 
 ### 結論
