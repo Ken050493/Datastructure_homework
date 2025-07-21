@@ -42,11 +42,11 @@ int ackermann_iterative(int m, int n)
 int main() 
 {
     int m, n;
-    cout << "½Ğ¿é¤J m ©M n¡G";
+    cout << "è«‹è¼¸å…¥ m å’Œ nï¼š";
     cin >> m >> n;
     if (m < 0 || n < 0) 
 	{
-        cerr << "¿ù»~¡Gm ©M n ¥²¶·¬°«D­t¾ã¼Æ" << endl;
+        cerr << "éŒ¯èª¤ï¼šm å’Œ n å¿…é ˆç‚ºéè² æ•´æ•¸" << endl;
         return 1;
     }
     int result = ackermann_iterative(m, n);
