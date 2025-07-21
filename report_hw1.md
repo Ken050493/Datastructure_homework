@@ -231,23 +231,31 @@ int main()
 3.**非遞迴的優點**:可以處理較大輸入  
 以本題為例:
 ```cpp
-int ackermann_iterative(int m, int n) {
-    stack<pair<int, int>> s;
-    s.push({m, n});
-    while (!s.empty()) {
-        auto [m1, n1] = s.top(); s.pop();
-        if (m1 == 0) {
-            n = n1 + 1;
-        } else if (n1 == 0) {
-            s.push({m1 - 1, 1});
-        } else {
-            s.push({m1 - 1, -1});
-            s.push({m1, n1 - 1});
+int ackermann_iterative(int m, int n) 
+{
+    StackFrame stack[MAX_STACK];
+    int top = 0;
+    stack[top++] = {m, n};
+    while (top > 0) 
+	{
+        StackFrame frame = stack[--top];
+        if (frame.m == 0) 
+		{
+            n = frame.n + 1;
+        } 
+		else if (frame.n == 0) 
+		{
+            stack[top++] = {frame.m - 1, 1};
+        } 
+		else 
+		{
+            stack[top++] = {frame.m - 1, -1};
+            stack[top++] = {frame.m, frame.n - 1};
         }
-        while (!s.empty() && s.top().second == -1) {
-            auto m2 = s.top().first; s.pop();
-            s.push({m2, n});
-            break;
+        while (top > 0 && stack[top - 1].n == -1) 
+		{
+            StackFrame waiting = stack[--top];
+            stack[top++] = {waiting.m, n};
         }
     }
     return n;
