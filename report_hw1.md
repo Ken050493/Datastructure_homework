@@ -119,33 +119,34 @@ int main()
 以下為第二題程式碼：
 ```cpp
 #include <iostream>
-#include <vector>
 #include <string>
 using namespace std;
 
-void generatePowerset(const vector<string>& set, vector<string>& current, int index)
+const int MAX_SIZE = 10; 
+void generatePowerset(string set[], string current[], int index, int currentSize, int setSize) 
 {
-    if (index == set.size())
-    {
+    if (index == setSize) 
+	{
         cout << "{ ";
-        for (const string& elem : current)
-        {
-            cout << elem << " ";
+        for (int i = 0; i < currentSize; ++i) 
+		{
+            cout << current[i] << " ";
         }
         cout << "}" << endl;
         return;
     }
-    generatePowerset(set, current, index + 1);
-    current.push_back(set[index]);
-    generatePowerset(set, current, index + 1);
-    current.pop_back(); 
+    generatePowerset(set, current, index + 1, currentSize, setSize);
+    current[currentSize] = set[index];
+    generatePowerset(set, current, index + 1, currentSize + 1, setSize);
 }
-int main()
+
+int main() 
 {
-    vector<string> S = {"a", "b", "c"};
-    vector<string> current;
+    string S[MAX_SIZE] = {"a", "b", "c"};
+    string current[MAX_SIZE];
+    int setSize = 3;
     cout << "Powerset of {a, b, c}:" << endl;
-    generatePowerset(S, current, 0);
+    generatePowerset(S, current, 0, 0, setSize);
     return 0;
 }
 
