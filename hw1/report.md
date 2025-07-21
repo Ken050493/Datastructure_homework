@@ -187,13 +187,15 @@ Powerset of {a, b, c}:
 ### 編譯與執行指令
 
 ```
-**遞迴版 Ackermann 函數**
+遞迴版 Ackermann 函數:
 g++ -std=c++17 -o ackermann_recursive ackermann_recursive.cpp
 ./ackermann_recursive
 
+非遞迴版 Ackermann 函數:
 g++ -std=c++17 -o ackermann_iterative ackermann_iterative.cpp
 ./ackermann_iterative
 
+Powerset 函數:
 g++ -std=c++17 -o powerset powerset.cpp
 ./powerset
 
