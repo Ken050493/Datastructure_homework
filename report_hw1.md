@@ -25,10 +25,10 @@
 ```cpp
 
 #include <iostream>
+
 using namespace std;
 
-int ackermann(int m, int n)
-{
+int ackermann(int m, int n) {
     if (m == 0)
         return n + 1;
     else if (n == 0)
@@ -37,25 +37,24 @@ int ackermann(int m, int n)
         return ackermann(m - 1, ackermann(m, n - 1));
 }
 
-int main()
-{
+int main() {
     int m, n;
     cout << "請輸入 m 和 n：";
     cin >> m >> n;
-    try
-    {
-        if (m < 0 || n < 0)
-            throw invalid_argument("m 和 n 需為非負整數");
-        int result = ackermann(m, n);
-        cout << "Ackermann(" << m << ", " << n << ") = " << result << endl;
+
+    if (m < 0 || n < 0) {
+        cout << "錯誤：m 和 n 必須是非負整數。" << endl;
+        return 1;
     }
-    catch (const exception& e)
-    {
-        cerr << "錯誤：" << e.what() << endl;
-    }
+
+    int result = ackermann(m, n);
+    cout << "Ackermann(" << m << ", " << n << ") = " << result << endl;
+
     return 0;
 }
-```
+
+```  
+        
 非遞迴版
 ```cpp
 #include <iostream>
@@ -68,12 +67,10 @@ int ackermann_iterative(int m, int n)
 {
     stack<pair<int, int>> s;
     s.push({m, n});
-
     while (!s.empty())
     {
         auto [m1, n1] = s.top();
         s.pop();
-
         if (m1 == 0)
         {
             n = n1 + 1;
@@ -118,14 +115,56 @@ int main()
 }
 
 ```
-## 效能分析
 
+以下為第二題程式碼：
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void generatePowerset(const vector<string>& set, vector<string>& current, int index)
+{
+    if (index == set.size())
+    {
+        cout << "{ ";
+        for (const string& elem : current)
+        {
+            cout << elem << " ";
+        }
+        cout << "}" << endl;
+        return;
+    }
+    generatePowerset(set, current, index + 1);
+    current.push_back(set[index]);
+    generatePowerset(set, current, index + 1);
+    current.pop_back(); 
+}
+int main()
+{
+    vector<string> S = {"a", "b", "c"};
+    vector<string> current;
+    cout << "Powerset of {a, b, c}:" << endl;
+    generatePowerset(S, current, 0);
+    return 0;
+}
+
+
+```
+
+## 效能分析
+第一題:
 1. 時間複雜度：程式的時間複雜度為  $O(n)$。
+2. 空間複雜度：空間複雜度為 $O(n)$。
+
+第二題:
+1. 時間複雜度：程式的時間複雜度為  $O(n \cdot 2^n)$。
 2. 空間複雜度：空間複雜度為 $O(n)$。
 
 ## 測試與驗證
 
 ### 測試案例
+**Akermann函數:**
 
 | 測試案例 | 輸入參數 $n$ | 預期輸出 | 實際輸出 |
 |----------|--------------|----------|----------|
@@ -133,7 +172,18 @@ int main()
 | 測試二   | $m = 1$   $n = 2$     | 4        | 4        |
 | 測試三   | $m = 2$   $n = 2$     | 7        | 7        |
 | 測試四   | $m = 3$   $n = 2$     | 29       | 29       |
+| 測試五   | $m = 4$   $n = 1$     | 29       | 崩潰      |
 
+**Powerset:**
+Powerset of {a, b, c}:  
+{}  
+{ c }  
+{ b }  
+{ b c }  
+{ a }  
+{ a c }  
+{ a b }  
+{ a b c }  
 ### 編譯與執行指令
 
 ```shell
@@ -143,43 +193,65 @@ $ ./sigma
 ```
 
 ### 結論
+第一題:
+1. 程式能根據輸入的m、n計算akermann函數的值。  
+2. 在 $m < 0$或$n < 0$ 的情況下，程式會提醒m、n要大於等於0。
+   
+第二題:
+1. 能正確顯示出所有的子集合。  
 
-1. 程式能正確計算 $n$ 到 $1$ 的連加總和。  
-2. 在 $n < 0$ 的情況下，程式會成功拋出異常，符合設計預期。  
-3. 測試案例涵蓋了多種邊界情況（$n = 0$、$n = 1$、$n > 1$、$n < 0$），驗證程式的正確性。
 
 ## 申論及開發報告
 
-### 選擇遞迴的原因
+### Akermann函數遞迴與非遞迴的選擇:  
+1.**空間需求**  
+在遞迴時每次ackermann()都會呼叫新的stack frame，所以當遞迴過多時資源容易耗盡。  
 
-在本程式中，使用遞迴來計算連加總和的主要原因如下：
+2.**簡單理解**  
+從程式邏輯來看**遞迴版**更容易看懂。  
+以本題為例: 
+```cpp
+int main()
+{
+    int m, n;
+    cout << "請輸入 m 和 n：";
+    cin >> m >> n;
+    if (m < 0 || n < 0)
+    {
+        cout << "錯誤：m 和 n 必須是非負整數。" << endl;
+        return 1;
+    }
+    int result = ackermann(m, n);
+    cout << "Ackermann(" << m << ", " << n << ") = " << result << endl;
+    return 0;
+}
+```  
 
-1. **程式邏輯簡單直觀**  
-   遞迴的寫法能夠清楚表達「將問題拆解為更小的子問題」的核心概念。  
-   例如，計算 $\Sigma(n)$ 的過程可分解為：  
+3.**非遞迴的優點**:可以處理較大輸入  
+以本題為例:
+```cpp
+int ackermann_iterative(int m, int n) {
+    stack<pair<int, int>> s;
+    s.push({m, n});
+    while (!s.empty()) {
+        auto [m1, n1] = s.top(); s.pop();
+        if (m1 == 0) {
+            n = n1 + 1;
+        } else if (n1 == 0) {
+            s.push({m1 - 1, 1});
+        } else {
+            s.push({m1 - 1, -1});
+            s.push({m1, n1 - 1});
+        }
+        while (!s.empty() && s.top().second == -1) {
+            auto m2 = s.top().first; s.pop();
+            s.push({m2, n});
+            break;
+        }
+    }
+    return n;
+}
 
-   $$
-   \Sigma(n) = n + \Sigma(n-1)
-   $$
+```  
 
-   當 $n$ 等於 1 或 0 時，直接返回結果，結束遞迴。
 
-2. **易於理解與實現**  
-   遞迴的程式碼更接近數學公式的表示方式，特別適合新手學習遞迴的基本概念。  
-   以本程式為例：  
-
-   ```cpp
-   int sigma(int n) {
-       if (n < 0)
-           throw "n < 0";
-       else if (n <= 1)
-           return n;
-       return n + sigma(n - 1);
-   }
-   ```
-
-3. **遞迴的語意清楚**  
-   在程式中，每次遞迴呼叫都代表一個「子問題的解」，而最終遞迴的返回結果會逐層相加，完成整體問題的求解。  
-   這種設計簡化了邏輯，不需要額外變數來維護中間狀態。
-
-透過遞迴實作 Sigma 計算，程式邏輯簡單且易於理解，特別適合展示遞迴的核心思想。然而，遞迴會因堆疊深度受到限制，當 $n$ 值過大時，應考慮使用迭代版本來避免 Stack Overflow 問題。
