@@ -201,6 +201,24 @@ g++ -std=c++17 -o powerset powerset.cpp
 
 ```
 
+```
+非遞迴版 Ackermann 函數:
+g++ -std=c++17 -o ackermann_iterative ackermann_iterative.cpp
+./ackermann_iterative
+
+Powerset 函數:
+g++ -std=c++17 -o powerset powerset.cpp
+./powerset
+
+```
+```
+
+Powerset 函數:
+g++ -std=c++17 -o powerset powerset.cpp
+./powerset
+
+```
+
 ### 結論
 第一題:
 1. 程式能根據輸入的m、n計算akermann函數的值。  
