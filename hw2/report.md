@@ -217,9 +217,25 @@ int main() {
 ### 編譯與執行指令
 
 ```shell
-$ g++ -std=c++17 polynomial.cpp -o poly
-$ ./poly
+$ g++ polynomial.cpp -std=c++11 -o polynomial.exe
+$ ./polynomial.exe
 ```
+輸入第一個多項式：
+輸入項數：3
+2 3
+4 2
+1 0
+輸入第二個多項式：
+輸入項數：2
+1 3
+5 0
+
+第一個多項式: 2x^3 + 4x^2 + 1x^0
+第二個多項式: 1x^3 + 5x^0
+加法結果: 3x^3 + 4x^2 + 6x^0
+乘法結果: 2x^6 + 4x^5 + 2x^3 + 20x^3 + 4x^2 + 5x^0
+請輸入 x 的值以計算 p1(x): 2
+p1(2) = 41
 
 ### 結論
 
