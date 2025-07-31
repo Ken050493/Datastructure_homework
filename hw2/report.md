@@ -21,20 +21,28 @@
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
-#include <cstring>
 #include <string>
 #include <sstream>
+#include <algorithm>
+#include <fstream>
+#include <random>
+#include <cstring>
 using namespace std;
 
-class Polynomial;  // 前向宣告
+// 前向宣告
+class Polynomial;
 
+// Term 類別
 class Term {
     friend class Polynomial;
+    friend istream& operator>>(istream& in, Polynomial& poly);
+    friend ostream& operator<<(ostream& out, const Polynomial& poly);
 private:
-    float coef;  // 系數
+    float coef;  // 係數
     int exp;     // 次方
 };
 
+// Polynomial 類別
 class Polynomial {
 private:
     Term* termArray;
@@ -42,29 +50,30 @@ private:
     int terms;
 
 public:
-    Polynomial();                  // 建構子
-    ~Polynomial();                 // 解構子
-    Polynomial Add(const Polynomial& poly) const;
-    Polynomial Mult(const Polynomial& poly) const;
-    float Eval(float f) const;
+    Polynomial();                   // 預設建構子
+    ~Polynomial();                  // 解構子
 
-    // I/O 運算子多載
-    friend istream& operator>>(istream& in, Polynomial& poly);
-    friend ostream& operator<<(ostream& out, const Polynomial& poly);
+    Polynomial Add(const Polynomial& poly) const;  // 加法
+    Polynomial Mult(const Polynomial& poly) const; // 乘法
+    float Eval(float f) const;                     // 計算值
+
+    friend istream& operator>>(istream& in, Polynomial& poly); // 輸入運算子
+    friend ostream& operator<<(ostream& out, const Polynomial& poly); // 輸出運算子
 };
 
-// 建構與解構
+// 建構子
 Polynomial::Polynomial() {
     capacity = 10;
     terms = 0;
     termArray = new Term[capacity];
 }
 
+// 解構子
 Polynomial::~Polynomial() {
     delete[] termArray;
 }
 
-// I/O
+// 輸入運算子
 istream& operator>>(istream& in, Polynomial& poly) {
     cout << "輸入項數: ";
     in >> poly.terms;
@@ -73,12 +82,15 @@ istream& operator>>(istream& in, Polynomial& poly) {
         poly.capacity = poly.terms;
         poly.termArray = new Term[poly.capacity];
     }
-    cout << "依序輸入各項的係數與次方:\n";
-    for (int i = 0; i < poly.terms; ++i)
+
+    cout << "請依序輸入各項的係數與次方\n";
+    for (int i = 0; i < poly.terms; ++i) {
         in >> poly.termArray[i].coef >> poly.termArray[i].exp;
+    }
     return in;
 }
 
+// 輸出運算子
 ostream& operator<<(ostream& out, const Polynomial& poly) {
     for (int i = 0; i < poly.terms; ++i) {
         out << poly.termArray[i].coef << "x^" << poly.termArray[i].exp;
@@ -87,14 +99,14 @@ ostream& operator<<(ostream& out, const Polynomial& poly) {
     return out;
 }
 
-// 加法
+// 多項式加法
 Polynomial Polynomial::Add(const Polynomial& poly) const {
     Polynomial result;
-    int i = 0, j = 0, k = 0;
-
     result.capacity = capacity + poly.capacity;
     delete[] result.termArray;
     result.termArray = new Term[result.capacity];
+
+    int i = 0, j = 0, k = 0;
 
     while (i < terms && j < poly.terms) {
         if (termArray[i].exp > poly.termArray[j].exp)
@@ -114,12 +126,12 @@ Polynomial Polynomial::Add(const Polynomial& poly) const {
 
     while (i < terms) result.termArray[k++] = termArray[i++];
     while (j < poly.terms) result.termArray[k++] = poly.termArray[j++];
-    result.terms = k;
 
+    result.terms = k;
     return result;
 }
 
-// 乘法
+// 多項式乘法
 Polynomial Polynomial::Mult(const Polynomial& poly) const {
     Polynomial result;
     result.capacity = terms * poly.terms;
@@ -150,13 +162,39 @@ Polynomial Polynomial::Mult(const Polynomial& poly) const {
     return result;
 }
 
-// 求值
+// 多項式求值
 float Polynomial::Eval(float f) const {
     float result = 0.0;
-    for (int i = 0; i < terms; ++i)
+    for (int i = 0; i < terms; ++i) {
         result += termArray[i].coef * pow(f, termArray[i].exp);
+    }
     return result;
 }
+
+// 主程式（可選）
+int main() {
+    Polynomial p1, p2;
+    cout << "輸入第一個多項式：" << endl;
+    cin >> p1;
+    cout << "輸入第二個多項式：" << endl;
+    cin >> p2;
+
+    Polynomial sum = p1.Add(p2);
+    Polynomial prod = p1.Mult(p2);
+
+    cout << "\n第一個多項式: " << p1 << endl;
+    cout << "第二個多項式: " << p2 << endl;
+    cout << "加法結果: " << sum << endl;
+    cout << "乘法結果: " << prod << endl;
+
+    float x;
+    cout << "\n請輸入 x 的值以計算 p1(x): ";
+    cin >> x;
+    cout << "p1(" << x << ") = " << p1.Eval(x) << endl;
+
+    return 0;
+}
+
 
 ```
 
