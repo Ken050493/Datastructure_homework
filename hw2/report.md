@@ -5,14 +5,13 @@
 
 ## 解題說明
 
-本題要求實現一個遞迴函式，計算從 $1$ 到 $n$ 的連加總和。
+本題要求實作一個 Polynomial 類別，用以表示多項式（polynomial）並支援加法、乘法與評估等操作，資料成員與介面定義。
 
 ### 解題策略
 
-1. 使用遞迴函式將問題拆解為更小的子問題：
-   $$\Sigma(n) = n + \Sigma(n-1)$$
-2. 當 $n \leq 1$ 時，返回 $n$ 作為遞迴的結束條件。  
-3. 主程式呼叫遞迴函式，並輸出計算結果。
+1. 使用 class Term 表示多項式的單項式（儲存係數與次方）。
+2. Polynomial 類別包含 Term 陣列指標、容量與項數等欄位。  
+3. 運算功能由類別成員函式實作，輸入輸出則透過友元函式重載運算子。
 
 ## 程式實作
 
@@ -20,26 +19,151 @@
 
 ```cpp
 #include <iostream>
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <sstream>
 using namespace std;
 
-int sigma(int n) {
-    if (n < 0)
-        throw "n < 0";
-    else if (n <= 1)
-        return n;
-    return n + sigma(n - 1);
+class Polynomial;  // 前向宣告
+
+class Term {
+    friend class Polynomial;
+private:
+    float coef;  // 系數
+    int exp;     // 次方
+};
+
+class Polynomial {
+private:
+    Term* termArray;
+    int capacity;
+    int terms;
+
+public:
+    Polynomial();                  // 建構子
+    ~Polynomial();                 // 解構子
+    Polynomial Add(const Polynomial& poly) const;
+    Polynomial Mult(const Polynomial& poly) const;
+    float Eval(float f) const;
+
+    // I/O 運算子多載
+    friend istream& operator>>(istream& in, Polynomial& poly);
+    friend ostream& operator<<(ostream& out, const Polynomial& poly);
+};
+
+// 建構與解構
+Polynomial::Polynomial() {
+    capacity = 10;
+    terms = 0;
+    termArray = new Term[capacity];
 }
 
-int main() {
-    int result = sigma(3);
-    cout << result << '\n';
+Polynomial::~Polynomial() {
+    delete[] termArray;
 }
+
+// I/O 多載
+istream& operator>>(istream& in, Polynomial& poly) {
+    cout << "輸入項數: ";
+    in >> poly.terms;
+    if (poly.terms > poly.capacity) {
+        delete[] poly.termArray;
+        poly.capacity = poly.terms;
+        poly.termArray = new Term[poly.capacity];
+    }
+    cout << "依序輸入各項的係數與次方（例如 3 2 表示 3x^2）:\n";
+    for (int i = 0; i < poly.terms; ++i)
+        in >> poly.termArray[i].coef >> poly.termArray[i].exp;
+    return in;
+}
+
+ostream& operator<<(ostream& out, const Polynomial& poly) {
+    for (int i = 0; i < poly.terms; ++i) {
+        out << poly.termArray[i].coef << "x^" << poly.termArray[i].exp;
+        if (i != poly.terms - 1) out << " + ";
+    }
+    return out;
+}
+
+// 加法
+Polynomial Polynomial::Add(const Polynomial& poly) const {
+    Polynomial result;
+    int i = 0, j = 0, k = 0;
+
+    result.capacity = capacity + poly.capacity;
+    delete[] result.termArray;
+    result.termArray = new Term[result.capacity];
+
+    while (i < terms && j < poly.terms) {
+        if (termArray[i].exp > poly.termArray[j].exp)
+            result.termArray[k++] = termArray[i++];
+        else if (termArray[i].exp < poly.termArray[j].exp)
+            result.termArray[k++] = poly.termArray[j++];
+        else {
+            float sum = termArray[i].coef + poly.termArray[j].coef;
+            if (sum != 0) {
+                result.termArray[k].coef = sum;
+                result.termArray[k].exp = termArray[i].exp;
+                k++;
+            }
+            i++; j++;
+        }
+    }
+
+    while (i < terms) result.termArray[k++] = termArray[i++];
+    while (j < poly.terms) result.termArray[k++] = poly.termArray[j++];
+    result.terms = k;
+
+    return result;
+}
+
+// 乘法
+Polynomial Polynomial::Mult(const Polynomial& poly) const {
+    Polynomial result;
+    result.capacity = terms * poly.terms;
+    delete[] result.termArray;
+    result.termArray = new Term[result.capacity];
+    result.terms = 0;
+
+    for (int i = 0; i < terms; ++i) {
+        for (int j = 0; j < poly.terms; ++j) {
+            float newCoef = termArray[i].coef * poly.termArray[j].coef;
+            int newExp = termArray[i].exp + poly.termArray[j].exp;
+
+            bool found = false;
+            for (int k = 0; k < result.terms; ++k) {
+                if (result.termArray[k].exp == newExp) {
+                    result.termArray[k].coef += newCoef;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                result.termArray[result.terms].coef = newCoef;
+                result.termArray[result.terms].exp = newExp;
+                result.terms++;
+            }
+        }
+    }
+    return result;
+}
+
+// 求值
+float Polynomial::Eval(float f) const {
+    float result = 0.0;
+    for (int i = 0; i < terms; ++i)
+        result += termArray[i].coef * pow(f, termArray[i].exp);
+    return result;
+}
+
 ```
 
 ## 效能分析
 
-1. 時間複雜度：程式的時間複雜度為 $O(\log n)$。
-2. 空間複雜度：空間複雜度為 $O(100\times \log n + \pi)$。
+1. 時間複雜度：加法：$O(n + m)$、乘法：$O(nm)$
+2. 空間複雜度：加法：$O(n + m)$、乘法：$O(nm)$
 
 ## 測試與驗證
 
