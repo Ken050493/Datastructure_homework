@@ -266,9 +266,9 @@ p1(2) = 41
 3.**記憶體管理簡潔明確**
      以本程式為例：
    ```cpp
-    termArray = new Term[capacity];
-    // 使用完畢後釋放
-    delete[] termArray;
+        termArray = new Term[capacity];
+        // 使用完畢後釋放
+        delete[] termArray;
 
    ```
 透過這次 Polynomial 類別的作業，我回想上課交的類別封裝、動態記憶體、運算子多載與基本運算邏輯的實作方式。這讓我更加了解物件導向程式設計的理解，也學到如何使用多項式這種數學結構更了解程式化與實用性。
