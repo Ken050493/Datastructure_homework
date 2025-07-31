@@ -64,7 +64,7 @@ Polynomial::~Polynomial() {
     delete[] termArray;
 }
 
-// I/O 多載
+// I/O
 istream& operator>>(istream& in, Polynomial& poly) {
     cout << "輸入項數: ";
     in >> poly.terms;
@@ -73,7 +73,7 @@ istream& operator>>(istream& in, Polynomial& poly) {
         poly.capacity = poly.terms;
         poly.termArray = new Term[poly.capacity];
     }
-    cout << "依序輸入各項的係數與次方（例如 3 2 表示 3x^2）:\n";
+    cout << "依序輸入各項的係數與次方:\n";
     for (int i = 0; i < poly.terms; ++i)
         in >> poly.termArray[i].coef >> poly.termArray[i].exp;
     return in;
