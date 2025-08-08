@@ -189,9 +189,9 @@ int main() {
 ### 編譯與執行指令
 
 ```shell
-$ g++ -std=c++17 -o sigma sigma.cpp
-$ ./sigma
-6
+g++ -std=c++17 -O2 -Wall -Wextra -o poly.exe hw3\src\polynomialoperation.cpp
+poly
+
 ```
 
 ### 結論
