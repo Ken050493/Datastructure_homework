@@ -130,11 +130,11 @@ int main() {
     Polynomial p, q;
     float x;
 
-    cout << "¿é¤J¦h¶µ¦¡ p: ";
+    cout << "è¼¸å…¥å¤šé …å¼ p: ";
     cin  >> p;
-    cout << "¿é¤J¦h¶µ¦¡ q: ";
+    cout << "è¼¸å…¥å¤šé …å¼ q: ";
     cin  >> q;
-    cout << "¿é¤J x: ";
+    cout << "è¼¸å…¥ x: ";
     cin  >> x;
 
     cout << "p="   << p << '\n';
